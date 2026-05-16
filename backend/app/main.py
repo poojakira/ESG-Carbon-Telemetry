@@ -37,48 +37,45 @@ import mlflow  # type: ignore
 from app.logging_config import setup_logging # type: ignore
 from app.middleware import setup_middlewares, limiter # type: ignore
 
-# 1. Setup Logging (Structured JSON)
 setup_logging()
 logger = logging.getLogger("EcoTrack-Nexus")
 
-# 2. Global Variables
 ai_models = {
     "regressor": None,   
     "security": None     
 }
 
-# 3. Lifespan & App Setup
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("🚀 STARTUP: Synchronizing Industrial Nexus...")
+    logger.info("STARTUP: Synchronizing Industrial Nexus...")
     # Initialize Persistent DB
     init_db()
     
     # Start background ingestion worker
     worker_task = asyncio.create_task(ingestion_engine.stream_worker())
-    logger.info("📡 Async Ingestion Worker Started.")
+    logger.info("Async Ingestion Worker Started.")
 
     # Load AI Inference Engines
     if os.path.exists(settings.MODEL_PATH):
         try:
             ai_models["regressor"] = joblib.load(settings.MODEL_PATH)
-            logger.info(f"✅ Business Intelligence Model loaded.")
+            logger.info(f"Business Intelligence Model loaded.")
         except Exception as e:
-            logger.error(f"❌ CRITICAL: Model Load Failure: {e}")
+            logger.error(f"CRITICAL: Model Load Failure: {e}")
     
     if os.path.exists(settings.SECURITY_PATH):
         try:
             ai_models["security"] = joblib.load(settings.SECURITY_PATH)
-            logger.info("✅ Security Shield active.")
+            logger.info("Security Shield active.")
         except Exception:
-            logger.warning("⚠️  Security Core running in restricted mode.")
+            logger.warning("Security Core running in restricted mode.")
 
     yield
     # Shutdown logic
     ingestion_engine.is_running = False
     await worker_task
     ai_models.clear()
-    logger.info("📡 Async Ingestion Worker Shutdown.")
+    logger.info("Async Ingestion Worker Shutdown.")
 
 app = FastAPI(
     title="EcoTrack Enterprise Absolute Reality API",
@@ -129,9 +126,7 @@ def get_enterprise_metrics(     request: Request,
         return {
             "total_co2": float(round(total_co2, 2)), # type: ignore
             "avg_intensity": float(round(avg_intensity, 2)), # type: ignore
-            "renewable_mix": 42.8, 
             "active_nodes": int(len(df)),
-            "compliance_score": "AAA",
             "region_breakdown": regions,
             "timestamp": datetime.now().isoformat()
         }
@@ -188,28 +183,24 @@ def get_sustainability_forecast(
             raise ValueError("Insufficient telemetry nodes for neural forecasting")
 
         df = pd.DataFrame([vars(item) for item in ledger_items])
-        # 1. Using Supreme Ensemble Forecasting (ARIMA + Naive Mix)
         carbon_col = "total_lifecycle_carbon_footprint"
         history_series = df[carbon_col]
         
         baseline = ensemble_fc(history_series, steps=12)
         
-        # 2. Confidence Interval Logic (Simulated Probabilities)
         optimistic = [round(float(x * 0.94), 2) for x in baseline] # type: ignore
         pessimistic = [round(float(x * 1.06), 2) for x in baseline] # type: ignore
         
-        # 3. MLflow Tracking for Enterprise Intelligence
         with mlflow.start_run(run_name=f"Forecast-v{settings.VERSION[:5]}-{datetime.now().strftime('%Y%m%d')}"): # type: ignore
              mlflow.log_param("history_len", len(df))
              mlflow.log_metric("avg_forecast", np.mean(baseline)) # type: ignore
-             mlflow.set_tag("engine", "ARIMA-EXS-SUPREME")
+             mlflow.set_tag("engine", "ARIMA-EXS-v1")
              
         return {
-            "period": "12-Point Sequence Proj (Supreme-Ensemble-v3)",
+            "period": "12-Point Sequence Proj (Ensemble-v3)",
             "baseline_projection": [round(float(x), 2) for x in baseline], # type: ignore
             "optimistic_projection": optimistic,
             "pessimistic_projection": pessimistic,
-            "confidence_score": 0.965,
             "methodology": "ARIMA + Naive Ensembling with MLflow Tracking"
         }
     except Exception as e:
@@ -236,8 +227,7 @@ def get_performance_trends(
 
     return {
         "category_trends": {str(k): float(v) for k, v in cat_trends.items()},
-        "vendor_performance": {str(k): float(v) for k, v in vendor_trends.items()},
-        "yoy_change": -3.42
+        "vendor_performance": {str(k): float(v) for k, v in vendor_trends.items()}
     }
 
 @app.get("/api/v1/export")
@@ -279,7 +269,6 @@ def predict_carbon_footprint(
     try:
         input_dict = data.model_dump()
         
-        # 0. Supreme Data Validation Gate
         ml_features = [
             "raw_material_energy", "raw_material_emission_factor", "raw_material_waste",
             "manufacturing_energy", "manufacturing_efficiency", "manufacturing_water_usage",
@@ -298,7 +287,7 @@ def predict_carbon_footprint(
         # Outlier Detection (Z-Score Core)
         outliers = DataValidator.detect_outliers(input_df) # type: ignore
         if outliers:
-             logger.warning(f"⚠️  Input features contain outliers: {outliers}")
+             logger.warning(f"Input features contain outliers: {outliers}")
              # We let it pass but log it to MLflow later
 
         is_anomaly = False
@@ -307,14 +296,14 @@ def predict_carbon_footprint(
             try:
                 if security_model.predict(input_df)[0] == -1:
                     is_anomaly = True
-                    logger.warning("🚨 Anomalous data profile detected.")
+                    logger.warning("Anomalous data profile detected.")
             except Exception:
                 pass
 
         regressor = ai_models.get("regressor")
         if regressor:
             prediction = float(regressor.predict(input_df)[0])
-            model_ver = "v8.0.0-Supreme-AI"
+            model_ver = "v8.0.0"
         else:
             prediction = (data.raw_material_energy * 0.45) + (data.manufacturing_energy * 0.65)
             model_ver = "v8.0.0-Deterministic-Fallback"
@@ -328,7 +317,7 @@ def predict_carbon_footprint(
 
         return {
             "predicted_carbon_footprint": float(round(prediction, 2)), # type: ignore
-            "confidence_interval": [float(round(prediction * 0.98, 2)), float(round(prediction * 1.02, 2))], # type: ignore
+            "confidence_interval": None,  # TODO: implement proper statistical confidence interval
             "anomaly_detected": bool(is_anomaly),
             "model_version": str(model_ver),
             "metadata": {

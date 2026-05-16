@@ -3,13 +3,11 @@ uvicorn==0.27.0
 scikit-learn==1.4.0
 joblib==1.3.2
 pydantic==2.6.0
-python-multipart
+python-multipart==0.0.6
 httpx==0.24.1
 pyyaml
 pydantic-settings
 slowapi
-fastapi
-uvicorn
 sqlalchemy
 psycopg2-binary
 python-jose[cryptography]
@@ -24,6 +22,3 @@ pandas
 numpy
 typer
 rich
-httpx
-joblib
-python-multipart

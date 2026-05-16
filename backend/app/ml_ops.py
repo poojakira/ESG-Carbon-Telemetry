@@ -8,7 +8,7 @@ logger = logging.getLogger("EcoTrack-MLOps")
 
 
 class DataValidator:
-    """ Industrial-grade data quality gate for telemetry and inference. """
+    """ Data quality gate for telemetry and inference. """
 
     @staticmethod
     def validate_schema(data: Dict[str, Any], schema_fields: List[str]) -> bool:

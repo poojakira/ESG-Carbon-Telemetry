@@ -1,6 +1,6 @@
 # Production Overrides
 env: "production"
-database_url: "postgresql://user:password@localhost/ecotrack_prod"
-secret_key: "ROTATE_THIS_BEFORE_DEPLOYMENT_2026_SUPREME"
+database_url: "${DATABASE_URL}"  # Set via environment variable or secret manager
+secret_key: "${SECRET_KEY}"  # Set via environment variable or secret manager
 debug: false
 log_level: "INFO"

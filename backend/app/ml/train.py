@@ -25,7 +25,7 @@ class ModelFactory:
             raise ValueError(f"Unsupported model type: {model_type}")
 
 def train(model_type="random_forest"):
-    logger.info(f"🚀 STARTING SUPREME TRAINING (Policy: {model_type})...")
+    logger.info(f"STARTING TRAINING (Policy: {model_type})...")
 
     # 1. Load Data
     if not os.path.exists(settings.DATA_PATH):
@@ -69,7 +69,7 @@ def train(model_type="random_forest"):
     joblib.dump(security_model, settings.SECURITY_PATH)
     logger.info(f"✅ Saved Security Model to: {settings.SECURITY_PATH}")
 
-    logger.info("🎉 SUPREME TRAINING COMPLETE.")
+    logger.info("TRAINING COMPLETE.")
 
 if __name__ == "__main__":
     # Allow model type selection via CLI or default to random_forest

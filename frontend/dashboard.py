@@ -7,7 +7,6 @@ import joblib
 import os
 from datetime import datetime
 
-# --- 1. ENTERPRISE CONFIGURATION ---
 st.set_page_config(
     page_title="EcoTrack Enterprise Pro | Industrial Sustainability ERP",
     page_icon="🏢",
@@ -22,12 +21,6 @@ MODEL_PATH = os.path.join(BASE_DIR, "backend", "data", "model.pkl")
 SECURITY_MODEL_PATH = os.path.join(BASE_DIR, "backend", "data", "security_model.pkl")
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 
-# --- 1.5. BARE MODE DETECTION ---
-# When users execute the script directly with `python dashboard.py` the
-# Streamlit runtime context is missing, which leads to hundreds of
-# warnings and, previously, a NameError when trying to use `df` later on.
-# `get_script_run_ctx()` returns `None` outside of the normal Streamlit
-# launcher, so we can print a helpful message and exit early.
 import sys
 
 if st.runtime.scriptrunner.get_script_run_ctx() is None:
@@ -35,7 +28,6 @@ if st.runtime.scriptrunner.get_script_run_ctx() is None:
     print("Dashboard script executed outside of Streamlit.\n" \
           "Please start with `streamlit run dashboard.py` to launch the app.")
     sys.exit(0)
-# --- 2. PREMIUM DESIGN SYSTEM & CINEMATIC AESTHETICS ---
 st.markdown("""
     <style>
     @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;600&family=JetBrains+Mono&display=swap');
@@ -114,7 +106,6 @@ st.markdown("""
 
 import requests
 
-# --- 3. SESSION & AUTHENTICATION STATE ---
 if 'token' not in st.session_state:
     st.session_state.token = None
 
@@ -132,8 +123,8 @@ def login_ui():
                     st.rerun()
                 else:
                     st.error("Invalid Credentials.")
-            except:
-                st.error("Nexus Offline.")
+            except Exception as e:
+                st.error("Backend unavailable.")
 
 if not st.session_state.token:
     st.title("EcoTrack Enterprise")
@@ -141,50 +132,35 @@ if not st.session_state.token:
     login_ui()
     st.stop()
 
-# --- 4. PRODUCTION DATA INGESTION ---
 @st.cache_data(ttl=10)
 def fetch_api_data(token):
     headers = {"Authorization": f"Bearer {token}"}
     try:
-        # 1. Fetch Metrics
         metrics = requests.get(f"{BACKEND_URL}/api/v1/metrics", headers=headers, timeout=5).json()
-        # 2. Fetch Trends
         trends = requests.get(f"{BACKEND_URL}/api/v1/analytics/trends", headers=headers, timeout=5).json()
-        # 3. Fetch Audit Logs
         audit = requests.get(f"{BACKEND_URL}/api/v1/ledger/audit-log", headers=headers, timeout=5).json()
-        # 5. Fetch Recommendations
         recs = requests.get(f"{BACKEND_URL}/api/v1/recommendations", headers=headers, timeout=5).json()
-        
+        ledger_csv = requests.get(f"{BACKEND_URL}/api/v1/ledger/export", headers=headers, timeout=5).text
         from io import StringIO
-        df = pd.read_csv(StringIO(ledger))
+        df = pd.read_csv(StringIO(ledger_csv))
         return df, metrics, trends, audit, recs
     except Exception as e:
-        st.error(f"⚠️ Telemetry Node Synchronization Failure: {e}")
+        st.error(f"Data synchronization failed: {e}")
         return pd.DataFrame(), None, None, [], None
 
 df, api_metrics, api_trends, api_audit, api_recs = fetch_api_data(st.session_state.token)
 
-# --- 5. TOP TICKER ---
-st.markdown(f"""
-    <div class="ticker-wrap"><div class="ticker">
-        <div class="ticker-item">EU ETS: €84.12 (+0.2%)</div>
-        <div class="ticker-item">Nexus Node: 127.0.0.1:8000</div>
-        <div class="ticker-item">Status: ABSOLUTE REALITY ACTIVE</div>
-        <div class="ticker-item">Last Audit: ISO 14064 Compliance Verified</div>
-    </div></div>
-    """, unsafe_allow_html=True)
 
-# --- 6. HEADER ---
+
 c1, c2 = st.columns([3, 1])
 with c1:
-    st.markdown(f"# EcoTrack <span style='color:{'#10B981'}'>Supreme</span>", unsafe_allow_html=True)
+    st.markdown(f"# EcoTrack <span style='color:{'#10B981'}'></span>", unsafe_allow_html=True)
     st.caption(f"Enterprise Data Nexus v8.0.0 | High-Throughput Streaming Active")
 with c2:
     if st.button("🔴 Terminate Session"):
         st.session_state.token = None
         st.rerun()
 
-# --- 7. TABS ---
 t1, t2, t3, t4, t5 = st.tabs(["📊 Executive Command", "⛓️ Merkle Ledger", "🛡️ AI Security", "🤖 MLOps Terminal", "💡 Action Center"])
 
 with t1:
@@ -283,8 +259,7 @@ with t5:
 st.sidebar.divider()
 st.sidebar.markdown("""
 <div style='text-align: center; color: #64748b; font-size: 0.7rem;'>
-    EcoTrack Supreme v8.0.0<br/>
-    ● ABSOLUTE REALITY ACTIVE
+    EcoTrack v1.0.0
 </div>
 """, unsafe_allow_html=True)
 

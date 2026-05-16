@@ -14,13 +14,13 @@ class Settings(BaseSettings):
 
     # DATABASE & SECURITY
     DATABASE_URL: str = "sqlite:///./ecotrack_enterprise.db"
-    SECRET_KEY: str = "industrial_grade_secret_2026"
+    SECRET_KEY: str = os.environ["SECRET_KEY"]
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 60
 
     # ML & TELEMETRY
-    MODEL_PATH: str = "app/ml/business_intel_v8.joblib"
-    SECURITY_PATH: str = "app/ml/security_shield_v8.joblib"
+    MODEL_PATH: str = "data/model.pkl"
+    SECURITY_PATH: str = "data/security_model.pkl"
 
     # OBSERVABILITY
     LOG_LEVEL: str = "INFO"

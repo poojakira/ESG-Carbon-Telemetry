@@ -7,7 +7,6 @@ import logging
 import traceback
 import time
 
-# 1. Rate Limiting Initialization
 limiter = Limiter(key_func=get_remote_address)
 
 async def error_handling_middleware(request: Request, call_next):
@@ -35,7 +34,7 @@ async def error_handling_middleware(request: Request, call_next):
         )
 
 def setup_middlewares(app):
-    """ Configures the application with industrial-grade guardrails. """
+    """ Configures the application with security middleware. """
     app.state.limiter = limiter
     app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
     app.middleware("http")(error_handling_middleware)

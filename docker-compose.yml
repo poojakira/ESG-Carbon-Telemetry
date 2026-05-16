@@ -1,21 +1,32 @@
 version: '3.8'
 
 services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: ${DB_USER:-ecouser}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+      POSTGRES_DB: ecotrack
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   backend:
     build: ./backend
     container_name: eco_backend_v4
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     volumes:
-      # Map the code so you can edit while running
       - ./backend:/app
-      # Map the data folder so both containers see the CSV and Models
       - ./backend/data:/app/data
     ports:
       - "8000:8000"
     environment:
       - ENV=production
-      - DATABASE_URL=postgresql://user:password@db:5432/ecotrack
-      - SECRET_KEY=ROTATE_THIS_IN_PROD
+      - DATABASE_URL=${DATABASE_URL}
+      - SECRET_KEY=${SECRET_KEY}
+    depends_on:
+      - db
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
@@ -26,7 +37,6 @@ services:
   frontend:
     build: ./frontend
     container_name: eco_frontend_v4
-    # Wait for backend to be ready before starting
     depends_on:
       - backend
     volumes:
@@ -38,7 +48,9 @@ services:
       - BACKEND_URL=http://backend:8000
     restart: always
 
-# Optional: Define a shared network
+volumes:
+  pgdata:
+
 networks:
   default:
     driver: bridge

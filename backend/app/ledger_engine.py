@@ -1,4 +1,5 @@
 import hashlib
+import os
 from typing import List
 
 class MerkleTree:
@@ -42,5 +43,5 @@ def verify_merkle_batch(data_list: List[str], expected_root: str) -> bool:
 
 def calculate_audit_signature(root_hash: str, timestamp: str) -> str:
     """ Highly simulated cryptographic signature for industrial audit compliance. """
-    payload = f"SIGNATURE-v8|{root_hash}|{timestamp}|PRIVATE_KEY_SUPREME"
+    payload = f"SIGNATURE-v8|{root_hash}|{timestamp}|{os.getenv('LEDGER_SIGNING_KEY', 'dev-only-key')}"
     return hashlib.sha3_256(payload.encode()).hexdigest()

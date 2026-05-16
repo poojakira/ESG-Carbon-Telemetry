@@ -35,7 +35,6 @@ class IngestionSystem:
         
         while self.is_running:
             try:
-                # 1. Wait for batch
                 job = await self.queue.get()
                 batch_id = str(job["batch_id"])
                 records = list(job["records"]) # type: ignore
@@ -43,7 +42,6 @@ class IngestionSystem:
                 
                 logger.info(f"📦 Processing Batch {batch_id} ({len(records)} records)...")
                 
-                # 2. Process Batch in Database Context
                 db = SessionLocal()
                 try:
                     await self._process_batch(db, records, batch_id, username)
@@ -70,7 +68,7 @@ class IngestionSystem:
             product_id = "SKU-" + str(u_hex[0:5]).upper() # type: ignore
             timestamp = datetime.now()
             
-            # Logic calculation
+            # Emission factors: 0.45 kg CO2/kWh for raw materials, 0.65 kg CO2/kWh for manufacturing
             total_carbon = (record["raw_material_energy"] * 0.45) + (record["manufacturing_energy"] * 0.65)
             
             # Chaining

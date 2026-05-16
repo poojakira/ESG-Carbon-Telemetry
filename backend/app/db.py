@@ -6,17 +6,10 @@ from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from app.config import settings
 
-# --- SQLAlchemy Setup ---
-engine = create_engine(
-    settings.DATABASE_URL, 
-    pool_size=20, 
-    max_overflow=10,
-    pool_pre_ping=True
-)
+engine = create_engine(settings.DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 Base = declarative_base()
 
-# --- Models ---
 
 class Ledger(Base):
     __tablename__ = "ledger"
@@ -60,7 +53,7 @@ class AuditLog(Base):
     signature = Column(String) # Simulated digital signature
     operator = Column(String)  # The user who performed ingestion
 
-# --- Dependency ---
+
 def get_db():
     db = SessionLocal()
     try:
@@ -68,13 +61,11 @@ def get_db():
     finally:
         db.close()
 
-# --- Helpers ---
 
 def get_latest_hash(db: SessionLocal):
     row = db.query(Ledger).order_by(Ledger.id.desc()).first()
     return row.hash if row else "0" * 64
 
-# --- Initialization & Seeding ---
 
 def init_db():
     Base.metadata.create_all(bind=engine)
