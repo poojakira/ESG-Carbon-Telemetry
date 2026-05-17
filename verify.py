@@ -7,6 +7,8 @@ import sys, os, time
 sys.path.insert(0, "backend")
 os.environ.setdefault("SECRET_KEY", "verify-script-dev-key")
 os.environ.setdefault("ENV", "development")
+import logging
+logging.disable(logging.CRITICAL)
 
 print("=" * 60)
 print("ESG CARBON TELEMETRY VERIFICATION")
