@@ -166,10 +166,10 @@ t1, t2, t3, t4, t5 = st.tabs(["📊 Executive Command", "⛓️ Merkle Ledger", 
 with t1:
     if api_metrics:
         m1, m2, m3, m4 = st.columns(4)
-        m1.metric("Net Carbon Liability", f"{api_metrics['total_co2']:.1f} kg", "-2.4%")
-        m2.metric("Compliance Alpha", api_metrics['compliance_score'], "VALIDATED")
-        m3.metric("Renewable Mix", f"{api_metrics['renewable_mix']}%", "+1.2%")
-        m4.metric("Active Nodes", "327", "SYNCED")
+        m1.metric("Net Carbon Liability", f"{api_metrics['total_co2']:.1f} kg")
+        m2.metric("Avg Intensity", f"{api_metrics['avg_intensity']:.2f}")
+        m3.metric("Active Regions", str(len(api_metrics.get('region_breakdown', {}))))
+        m4.metric("Status", "CONNECTED")
 
     st.divider()
     
@@ -224,7 +224,7 @@ with t4:
     if api_trends:
         st.markdown("#### Feature Distribution Drift")
         # Simplified view for UI
-        st.write("Current Data Shift Estimate: **0.14%** (Within Safe Bounds)")
+        st.write("Data drift detection not yet implemented — requires baseline distribution from production data.")
         
         c1, c2 = st.columns(2)
         with c1:
