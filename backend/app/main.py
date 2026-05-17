@@ -165,10 +165,6 @@ async def ingest_data(     request: Request,
     except Exception as e:
         logger.error(f"Ingestion Dispatch Error: {e}")
         raise HTTPException(status_code=500, detail="Failed to queue data for processing")
-    except Exception as e:
-        db.rollback()
-        logger.error(f"Ingestion Kernel Error: {e}")
-        raise HTTPException(status_code=500, detail=str(e))
 
 @app.get("/api/v1/forecast", response_model=ForecastOutput)
 def get_sustainability_forecast(
@@ -211,8 +207,8 @@ def get_sustainability_forecast(
             "baseline_projection": [mean_val] * 12,
             "optimistic_projection": [mean_val * 0.9] * 12,
             "pessimistic_projection": [mean_val * 1.1] * 12,
-            "confidence_score": 0.85,
-            "methodology": "Simple Moving Average"
+            "confidence_score": 0.0,
+            "methodology": "Fallback — no trained model available"
         }
 
 @app.get("/api/v1/analytics/trends", response_model=TrendOutput)
