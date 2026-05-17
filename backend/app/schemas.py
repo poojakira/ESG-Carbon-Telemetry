@@ -67,7 +67,6 @@ class TrendOutput(BaseModel):
     vendor_performance: dict
     yoy_change: float
 
-# --- AUTHENTICATION SCHEMAS ---
 
 class UserBase(BaseModel):
     username: str
