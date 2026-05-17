@@ -77,7 +77,7 @@ def init_db():
             df = pd.read_csv(settings.DATA_PATH)
             carbon_col = 'total_lifecycle_carbon_footprint'
             
-            # Absolute Reality: Direct Column Mapping
+            # Direct column mapping
             records = []
             for _, row in df.iterrows():
                 # Convert string timestamp to datetime if necessary

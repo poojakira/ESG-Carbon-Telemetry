@@ -20,7 +20,7 @@ class JsonFormatter(logging.Formatter):
         return json.dumps(log_record)
 
 def setup_logging(level=logging.INFO):
-    """ Configures structured logging for the Nexus. """
+    """ Configures structured logging. """
     logger = logging.getLogger()
     logger.setLevel(level)
     
@@ -34,7 +34,7 @@ def setup_logging(level=logging.INFO):
     logger.addHandler(handler)
     
     # Also log to file for audit persistence
-    file_handler = logging.FileHandler("nexus_audit.log")
+    file_handler = logging.FileHandler("audit.log")
     file_handler.setFormatter(JsonFormatter())
     logger.addHandler(file_handler)
 

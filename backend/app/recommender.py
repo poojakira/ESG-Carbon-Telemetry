@@ -51,7 +51,7 @@ class RecommenderEngine:
         # 2. Material Efficiency
         recommendations.append({
             "id": str(uuid.uuid4())[:8],
-            "action": "Switch to Bio-Polymer for Nexus-Series (Recyclability: +40%)",
+            "action": "Switch to Bio-Polymer for product line (Recyclability: +40%)",
             "impact_score": 0.72,
             "savings_est_kg": 12.5,
             "complexity": "Medium",

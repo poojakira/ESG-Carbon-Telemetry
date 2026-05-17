@@ -9,7 +9,7 @@ def test_health_check():
     """ Verify the system health and node synchronization. """
     response = client.get("/health")
     assert response.status_code == 200
-    assert response.json()["node"] == "Primary-Industrial-Nexus"
+    assert response.json()["node"] == "carbon-api-node"
 
 
 def test_get_metrics():

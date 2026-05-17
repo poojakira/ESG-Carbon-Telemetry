@@ -7,7 +7,7 @@ from rich.table import Table # type: ignore
 from rich.progress import Progress, SpinnerColumn, TextColumn # type: ignore
 import os
 
-app = typer.Typer(help="EcoTrack Enterprise Industrial CLI")
+app = typer.Typer(help="Carbon Analytics CLI")
 console = Console()
 BACKEND_URL = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
 
@@ -16,7 +16,7 @@ def get_auth_header(token):
 
 @app.command()
 def login(username: str = typer.Option(..., prompt=True), password: str = typer.Option(..., prompt=True, hide_input=True)):
-    """ Authenticate with the EcoTrack Nexus. """
+    """ Authenticate with the the API. """
     with console.status("[bold green]Authenticating...") as status:
         try:
             r = requests.post(f"{BACKEND_URL}/api/v1/auth/login", json={"username": username, "password": password})
@@ -28,7 +28,7 @@ def login(username: str = typer.Option(..., prompt=True), password: str = typer.
             else:
                 console.print(f"❌ [bold red]Access Denied:[/bold red] {r.text}")
         except Exception as e:
-            console.print(f"💥 [bold red]Nexus Connection Error:[/bold red] {e}")
+            console.print(f"💥 [bold red]Connection Error:[/bold red] {e}")
 
 @app.command()
 def verify():
@@ -67,7 +67,7 @@ def ingest(file: str):
             data = json.load(f)
         
         with Progress(SpinnerColumn(), TextColumn("[progress.description]{task.description}"), transient=True) as progress:
-            progress.add_task(description="Streaming to Nexus...", total=None)
+            progress.add_task(description="Streaming...", total=None)
             r = requests.post(f"{BACKEND_URL}/api/v1/data/ingest", json=data, headers=get_auth_header(token))
             
         if r.status_code == 202:
@@ -80,11 +80,11 @@ def ingest(file: str):
 
 @app.command()
 def status():
-    """ Check Nexus health and AI status. """
+    """ Check API health and AI status. """
     r = requests.get(f"{BACKEND_URL}/health")
     if r.status_code == 200:
         res = r.json()
-        table = Table(title="EcoTrack Nexus Status")
+        table = Table(title="the API Status")
         table.add_column("Property", style="cyan")
         table.add_column("Value", style="magenta")
         table.add_row("Status", res["status"])

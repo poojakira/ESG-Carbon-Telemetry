@@ -38,7 +38,7 @@ from app.logging_config import setup_logging # type: ignore
 from app.middleware import setup_middlewares, limiter # type: ignore
 
 setup_logging()
-logger = logging.getLogger("EcoTrack-Nexus")
+logger = logging.getLogger("carbon-analytics")
 
 ai_models = {
     "regressor": None,   
@@ -47,7 +47,7 @@ ai_models = {
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    logger.info("STARTUP: Synchronizing Industrial Nexus...")
+    logger.info("Starting ingestion worker...")
     # Initialize Persistent DB
     init_db()
     
@@ -78,7 +78,7 @@ async def lifespan(app: FastAPI):
     logger.info("Async Ingestion Worker Shutdown.")
 
 app = FastAPI(
-    title="EcoTrack Enterprise Absolute Reality API",
+    title="Carbon Analytics API",
     version=settings.VERSION,
     lifespan=lifespan
 )
@@ -95,7 +95,7 @@ app.include_router(recommendations.router, prefix="/api/v1")
 def health_check():
     return {
         "status": "online" if ai_models["regressor"] else "training_needed",
-        "node": "Primary-Industrial-Nexus",
+        "node": "carbon-api-node",
         "timestamp": datetime.now().isoformat()
     }
 

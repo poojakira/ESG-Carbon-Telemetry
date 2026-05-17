@@ -8,7 +8,7 @@ class Settings(BaseSettings):
     model_config = SettingsConfigDict(extra="ignore", env_prefix="", case_sensitive=False)
 
     # Core Infrastructure
-    PROJECT_NAME: str = "EcoTrack Enterprise"
+    PROJECT_NAME: str = "Carbon Analytics"
     VERSION: str = "8.5.0-STABLE"
     ENV: str = os.getenv("ENV", "development")
 
