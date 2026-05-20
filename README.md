@@ -1,5 +1,7 @@
 # carbon-analytics-platform
 
+> Async data pipeline: high-throughput batch ingestion (PostgreSQL COPY), ARIMA time-series forecasting, cryptographic audit trail. Demonstrates patterns for any industrial telemetry backend.
+
 FastAPI backend for carbon emissions tracking with async ingestion, Merkle audit trail, and time-series forecasting.
 
 ## API
