@@ -1,0 +1,27 @@
+﻿============================================================
+ESG CARBON TELEMETRY VERIFICATION
+============================================================
+
+[1/5] Loading configuration...
+  Project: Carbon Analytics v8.5.0-STABLE
+  Environment: development
+
+[2/5] Testing FastAPI endpoints...
+  GET /health -> 200
+  Response: {'status': 'training_needed', 'node': 'carbon-api-node', 'timestamp': '2026-05-19T18:22:09.887734'}
+
+[3/5] Testing batch ingestion...
+  POST /ingest (4 records) -> 404
+
+[4/5] ARIMA time-series forecasting...
+  Trained on 24 months of data
+  6-month forecast: ['2003', '2018', '2027', '2033', '2036', '2039'] kg CO2
+
+[5/5] Merkle hash-chain audit trail...
+  Chain length: 4 blocks
+  Latest hash: 6e81594acbad20e8318c13a6433a8386...
+  Chain integrity: VALID
+
+============================================================
+VERIFICATION COMPLETE
+============================================================
