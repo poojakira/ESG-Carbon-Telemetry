@@ -1,3 +1,9 @@
+# ESG-Carbon-Telemetry
+
+**TL;DR**: ML Security Engineer Portfolio Component - ESG-Carbon-Telemetry
+**Demo**: `make smoke`
+**Evidence**: `sarif_output.json`
+
 # carbon-analytics-platform
 
 > Async data pipeline: high-throughput batch ingestion (PostgreSQL COPY), ARIMA time-series forecasting, cryptographic audit trail. Demonstrates patterns for any industrial telemetry backend.
@@ -39,3 +45,9 @@ Batch ingestion uses an async queue that flushes to PostgreSQL via COPY (10-50x 
 ARIMA was chosen over Prophet because Prophet pulls in Stan (200MB+). For monthly data with clear seasonality, ARIMA is sufficient.
 
 See `docs/DECISIONS.md` for full architectural rationale.
+
+
+## Threat Model
+- **Assets**: ML Models, Training Data
+- **Adversaries**: Script kiddies, AI-automated attackers
+- **Mitigations**: Hardened CI/CD, Input Validation, SARIF Auditing
